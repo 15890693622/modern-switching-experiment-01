@@ -1,0 +1,47 @@
+name: 作业情况实时跟踪
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, closed]
+  workflow_run:
+    workflows: [PR评分反馈]
+    types: [completed]
+  workflow_dispatch:
+  schedule:
+    - cron: '17 */6 * * *'
+permissions:
+  contents: read
+  pull-requests: read
+  issues: write
+jobs:
+  tracking:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4.2.2
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Read private roster if teacher configured it
+        env:
+          ROSTER: ${{ secrets.STUDENT_ROSTER_CSV }}
+        run: |
+          python - <<'PY'
+          import os
+          from pathlib import Path
+          if os.getenv('ROSTER'):Path('course_management/students.csv').write_text(os.environ['ROSTER'],encoding='utf-8')
+          PY
+      - name: Refresh anonymized tracking table
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          TRACKING_ISSUE_NUMBER: ${{ vars.TRACKING_ISSUE_NUMBER }}
+        run: python grading/update_homework_tracking.py
+      - uses: actions/upload-artifact@v4.6.2
+        with:
+          name: tracking-table
+          path: |
+            course_management/homework_tracking.csv
+            course_management/HOMEWORK_TRACKING.md

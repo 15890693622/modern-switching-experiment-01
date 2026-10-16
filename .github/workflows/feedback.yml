@@ -1,0 +1,43 @@
+name: PR评分反馈
+on:
+  workflow_run:
+    workflows: [自动评分系统]
+    types: [completed]
+permissions:
+  actions: read
+  contents: read
+  pull-requests: write
+jobs:
+  comment:
+    if: github.event.workflow_run.event == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - name: Download report as data only
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: grading-report
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
+          path: feedback-data
+      - name: Post advisory score for matching current revision
+        continue-on-error: true
+        uses: actions/github-script@v7.0.1
+        with:
+          script: |
+            const fs=require('fs');
+            const run=context.payload.workflow_run;
+            const linked=run.pull_requests || [];
+            if(linked.length !== 1) { core.notice('No unambiguous PR association; use grading Summary.'); return; }
+            const n=linked[0].number;
+            const {data:pr}=await github.rest.pulls.get({...context.repo,pull_number:n});
+            if(pr.head.sha!==run.head_sha) { core.notice('Stale revision skipped'); return; }
+            const file='feedback-data/grade_report.json';
+            if(!fs.existsSync(file)) { core.notice('No report; use run logs'); return; }
+            const st=fs.statSync(file);if(st.size>65536) throw new Error('Report too large');
+            const report=JSON.parse(fs.readFileSync(file,'utf8'));
+            const score=Number(report.automatic_score);
+            if(report.schema_version!==1 || report.status!=='ok' || !Number.isFinite(score) || score<0 || score>70) throw new Error('Invalid score report');
+            const body='自动评分结果\n\n总分: '+score+'/100（自动项最高70分，教师复核30分待评；辅助反馈，非最终成绩）\n\n'+run.html_url+'\n<!-- graded-sha:'+pr.head.sha+' -->';
+            await github.rest.issues.createComment({...context.repo,issue_number:n,body});
