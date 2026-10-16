@@ -15,7 +15,7 @@ def generate_docx():
         st=doc.styles[name];st.font.name='SimSun';st._element.get_or_add_rPr().get_or_add_rFonts().set(qn('w:eastAsia'),'SimSun');st.font.color.rgb=RGBColor(0,0,0)
     doc.styles['Normal'].font.size=Pt(11);doc.styles['Normal'].paragraph_format.space_after=Pt(6)
     doc.styles['Normal'].paragraph_format.line_spacing=1.15
-    
+
     for st in doc.styles:
         for border in list(st._element.findall('.//' + qn('w:pBdr'))):
             border.getparent().remove(border)
