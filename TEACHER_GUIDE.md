@@ -24,7 +24,7 @@ PR反馈分数和日志只是教学辅助，学生可在其测试进程内影响
 
 ## 作业跟踪
 
-本地students.csv被.gitignore排除。发布的是students.example.csv和匿名PR作者跟踪逻辑。若要云端匹配真实名单，教师自行设置仓库Secret STUDENT_ROSTER_CSV；这会把名单交给GitHub，不在本次自动上传。公开仓库默认只输出GitHub账号、PR和自动分，不输出学生姓名学号。TRACKING_ISSUE_NUMBER是可选变量；未设置时表仍在Summary/Artifact。
+已按教师要求公开37人名单，见 [学生名单](course_management/students.csv)。[成绩记录说明](course_management/README.md)提供Excel成绩表、评分规则和提交跟踪入口。最新提交状态见“作业情况实时跟踪”Actions的Summary和tracking-table附件。
 
 无token的本地更新将显示待提交，不能把它误认为对GitHub实时提交情况的检查。云端接口错误应报错，不得将API失败伪装为全班未提交。
 

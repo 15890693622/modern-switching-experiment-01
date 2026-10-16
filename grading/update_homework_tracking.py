@@ -1,4 +1,4 @@
-"""可信分支运行；不执行学生代码。真实名单本地保留，云端输出匿名化。"""
+"""可信分支运行；不执行学生代码。使用教师确认的37人名单输出提交跟踪表。"""
 import csv,json,os,re,urllib.request
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
@@ -64,8 +64,6 @@ def main():
         logins=sorted({p['user']['login'] for p in prs});students=[{'序号':str(i+1),'GitHub用户名':u} for i,u in enumerate(logins)]
     else:students=[]
     rows=build_rows(students,prs)
-    if os.getenv('GITHUB_ACTIONS')=='true':
-        for r in rows:r['学号']='';r['姓名']='';r['备注']=''
     out=ROOT/'course_management';out.mkdir(exist_ok=True)
     with (out/'homework_tracking.csv').open('w',encoding='utf-8-sig',newline='') as f:
         wr=csv.DictWriter(f,fieldnames=FIELDS);wr.writeheader();wr.writerows(rows)

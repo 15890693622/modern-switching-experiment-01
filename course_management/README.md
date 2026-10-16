@@ -1,14 +1,18 @@
-# 作业跟踪和名单
+# 实验一学生名单与成绩记录
 
-students.example.csv是示例。真实students.csv仅保留本地，被.gitignore排除。跟踪列沿用无线课：序号、学号、姓名、GitHub用户名、是否提交代码、PR数量、提交次数、最新PR、最新PR状态、最新评分、评分状态、最近提交时间、备注。
+已按教师要求上传核对后的37人名单：students.csv。仅包含序号、学号、姓名、GitHub用户名和备注。
 
-匹配优先级：GitHub用户名、分支学号、PR标题学号、姓名。提交状态和评分状态分开。只信任github-actions[bot]自动反馈且head SHA一致的成绩，不读取学生自行写的总分评论。
+- **实验一成绩记录表_37人.xlsx**：教师日常登记用，宋体；黄色单元格录入成绩，教师分、最终分与成绩状态自动计算。自动评分填入PR反馈中的实际分数（满分70），不得使用模板仓库自测分代替学生成绩。缺项时总分留空，实际0分可以正常计算。GitHub用户名可陆续填写。
+- **实验一成绩记录表_37人.csv / .md**：首次建表快照，CSV兼容Excel，但不含公式；填写后的Excel请由教师保存，不会被云端任务覆盖。
+- **homework_tracking.csv / HOMEWORK_TRACKING.md**：提交跟踪快照，沿用无线技术实验字段。最新动态数据在“作业情况实时跟踪”Actions的Summary和tracking-table附件，每次PR变化和每6小时刷新。仓库内静态文件不由Actions自动提交覆盖。
 
-默认云端按PR作者建匿名列表；教师可自行配置Secret STUDENT_ROSTER_CSV以使用真实名单，但输出表仍隐藏姓名和学号。配置变量TRACKING_ISSUE_NUMBER可将匿名表更新到已有Issue；不配置仍生成Summary和Artifact。
+评分结构：自动70分＋教师30分（自拟反例5、实验报告15、AI协作记录10）；选做最多加10分，总成绩封顶100。四个必评分项完整录入后才显示最终成绩。未评分不等于0分。
+
+提交匹配优先级：GitHub用户名、分支学号、PR标题学号、PR标题姓名。仅采用github-actions[bot]且对应当前head SHA的评分反馈。教师可选配TRACKING_ISSUE_NUMBER，将跟踪表同步到已有Issue。
 
 ```bash
 python grading/update_homework_tracking.py
 python -m pytest grading/test_tracking.py -q
 ```
 
-本地离线模式只生成待提交基线；真实远端状态需GITHUB_TOKEN与GITHUB_REPOSITORY。不要把“未成功获取API”写成“全班未交”。
+离线运行只生成待提交基线；查询远端需GITHUB_TOKEN和GITHUB_REPOSITORY。API失败时停止，不能将获取失败解释为全班未交。

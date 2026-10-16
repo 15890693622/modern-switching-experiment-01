@@ -24,16 +24,7 @@ jobs:
       - uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-      - name: Read private roster if teacher configured it
-        env:
-          ROSTER: ${{ secrets.STUDENT_ROSTER_CSV }}
-        run: |
-          python - <<'PY'
-          import os
-          from pathlib import Path
-          if os.getenv('ROSTER'):Path('course_management/students.csv').write_text(os.environ['ROSTER'],encoding='utf-8')
-          PY
-      - name: Refresh anonymized tracking table
+      - name: Refresh 37-student tracking table
         env:
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}

@@ -120,7 +120,7 @@ git push
 
 GitHub Actions“自动评分系统”提供Summary及grading-report Artifacts；独立反馈流程尽可能在PR评论，无评论时以Summary和Artifacts为准。自动分仅作辅助反馈，教师复核后确定成绩。评分使用教师分支上的测试，学生修改评分脚本不能改变教师的评分规则。
 
-跟踪表见course_management/HOMEWORK_TRACKING.md；GitHub端最新表见“作业情况实时跟踪”Summary和tracking-table Artifact。若教师配置TRACKING_ISSUE_NUMBER，还会更新该Issue中的表。真实名单保留本地，云端按教师配置的私密名单或PR作者跟踪；不得把本地名单提交到公开仓库。
+已按教师要求公开37人名单，见 [学生名单](course_management/students.csv)。[成绩记录说明](course_management/README.md)提供Excel成绩表、评分规则和提交跟踪入口。最新提交状态见“作业情况实时跟踪”Actions的Summary和tracking-table附件。
 
 ## 11 常见问题
 

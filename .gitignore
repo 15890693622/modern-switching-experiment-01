@@ -8,7 +8,6 @@ grade_result.txt
 results/*
 !results/.gitkeep
 !results/README.md
-course_management/students.csv
 course_management/private/
 ~$*
 .build/
