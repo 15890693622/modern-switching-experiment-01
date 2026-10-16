@@ -4,6 +4,10 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 FIELDS=['序号','学号','姓名','GitHub用户名','是否提交代码','PR数量','提交次数','最新PR','最新PR状态','最新评分','评分状态','最近提交时间','备注']
 MARKER='<!-- homework-tracker:managed -->'
+
+def is_demo_pr(pr):
+    """Only the explicitly marked teacher fixture belongs in the demo report."""
+    return pr.get('head',{}).get('ref','').startswith('e2e-demo/') and pr.get('title','').startswith('[流程测试]')
 def api(path,method='GET',data=None):
     req=urllib.request.Request('https://api.github.com/repos/'+os.environ['GITHUB_REPOSITORY']+path,
         data=None if data is None else json.dumps(data).encode(),method=method,
@@ -63,12 +67,19 @@ def main():
     elif live:
         logins=sorted({p['user']['login'] for p in prs});students=[{'序号':str(i+1),'GitHub用户名':u} for i,u in enumerate(logins)]
     else:students=[]
-    rows=build_rows(students,prs)
+    demo_prs=[p for p in prs if is_demo_pr(p)]
+    rows=build_rows(students,[p for p in prs if not is_demo_pr(p)])
     out=ROOT/'course_management';out.mkdir(exist_ok=True)
     with (out/'homework_tracking.csv').open('w',encoding='utf-8-sig',newline='') as f:
         wr=csv.DictWriter(f,fieldnames=FIELDS);wr.writeheader();wr.writerows(rows)
     text=render(rows,live);(out/'HOMEWORK_TRACKING.md').write_text(text,encoding='utf-8')
-    if os.getenv('GITHUB_STEP_SUMMARY'):Path(os.environ['GITHUB_STEP_SUMMARY']).write_text(text,encoding='utf-8')
+    demo_students=[{'序号':'DEMO','学号':'LAB01-DEMO-2026','姓名':'模拟学生（不计入班级）','备注':'教师流程测试，非真实成绩'}] if demo_prs else []
+    demo_rows=build_rows(demo_students,demo_prs)
+    with (out/'demo_tracking.csv').open('w',encoding='utf-8-sig',newline='') as f:
+        wr=csv.DictWriter(f,fieldnames=FIELDS);wr.writeheader();wr.writerows(demo_rows)
+    demo_text=render(demo_rows,live).replace('# 现代交换实验01作业实时跟踪表','# 独立模拟提交记录（不计入37人班级）')
+    (out/'DEMO_TRACKING.md').write_text(demo_text,encoding='utf-8')
+    if os.getenv('GITHUB_STEP_SUMMARY'):Path(os.environ['GITHUB_STEP_SUMMARY']).write_text(text+'\n\n'+demo_text,encoding='utf-8')
     number=os.getenv('TRACKING_ISSUE_NUMBER','')
     if live and number:
         try:

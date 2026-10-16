@@ -28,7 +28,16 @@ jobs:
           script: |
             const fs=require('fs');
             const run=context.payload.workflow_run;
-            const linked=run.pull_requests || [];
+            let linked=run.pull_requests || [];
+            // Fork workflow_run payloads can omit pull_requests. Resolve using
+            // GitHub's current PR metadata, never a student-supplied PR number.
+            if(linked.length===0) {
+              const associated=await github.paginate(github.rest.pulls.list,{
+                ...context.repo,state:'all',per_page:100
+              });
+              linked=associated.filter(p=>p.head.sha===run.head_sha && p.head.ref===run.head_branch &&
+                p.base.repo.full_name===context.repo.owner+'/'+context.repo.repo);
+            }
             if(linked.length !== 1) { core.notice('No unambiguous PR association; use grading Summary.'); return; }
             const n=linked[0].number;
             const {data:pr}=await github.rest.pulls.get({...context.repo,pull_number:n});

@@ -24,6 +24,14 @@ PR反馈分数和日志只是教学辅助，学生可在其测试进程内影响
 
 ## 作业跟踪
 
+已启用固定看板：https://github.com/jwentong/modern-switching-experiment-01/issues/2 。仓库变量 `TRACKING_ISSUE_NUMBER=2` 已配置。机器人更新该Issue下的37人提交与自动分表，Actions还提供CSV/Markdown附件。模拟学号LAB01-DEMO-2026单独输出到 `DEMO_TRACKING.md` 与 `demo_tracking.csv`，不会计入班级人数和真实成绩。
+
+仓库设置：Settings → Actions → General。Actions已开启，允许当前工作流所需的官方Actions，默认Workflow permissions维持只读即可，工作流自身已声明反馈和Issue更新权限。不需要上传PAT、部署密钥或设置学生名单Secret。保留首次贡献者Fork运行审批；学生第一次PR若显示等待批准，教师检查改动后点击Approve workflows。无需启用“Allow GitHub Actions to create and approve pull requests”。学生使用个人Fork提交PR，不需要加入仓库Collaborators。
+
+教师日常操作：查看Issue #2的最新机器人表格，必要时在Actions的“作业情况实时跟踪”手动Run workflow。下载tracking-table附件可用Excel打开CSV。自动分最高70，人工30分仍由教师复核后填入Excel；初始Excel成绩簿不会自动同步云端或被覆盖。仅Push到个人Fork而未向教师仓库发PR，不算完成本课程提交。
+
+跨Fork评分反馈通过GitHub实时PR元数据和head SHA关联作业，处理workflow_run未携带pull_requests的情况；旧SHA的分数不覆盖学生新提交。
+
 已按教师要求公开37人名单，见 [学生名单](course_management/students.csv)。[成绩记录说明](course_management/README.md)提供Excel成绩表、评分规则和提交跟踪入口。最新提交状态见“作业情况实时跟踪”Actions的Summary和tracking-table附件。
 
 无token的本地更新将显示待提交，不能把它误认为对GitHub实时提交情况的检查。云端接口错误应报错，不得将API失败伪装为全班未提交。
