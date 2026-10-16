@@ -2,6 +2,8 @@
 
 在线最新看板：[37人作业提交与自动评分记录](https://github.com/jwentong/modern-switching-experiment-01/issues/2)。已设置仓库变量TRACKING_ISSUE_NUMBER=2，机器人在Issue评论中更新。测试PR以 `[流程测试]` 标题和 `e2e-demo/` 分支标识，单独记入DEMO_TRACKING.md及demo_tracking.csv，不影响真实37人表。
 
+[流程验收记录](../docs/submission_workflow_verification.md)包含真实跨Fork测试证据；[独立模拟成绩快照](DEMO_TRACKING.md)展示同一PR补交后从5分更新到10分。
+
 已按教师要求上传核对后的37人名单：students.csv。仅包含序号、学号、姓名、GitHub用户名和备注。
 
 - **实验一成绩记录表_37人.xlsx**：教师日常登记用，宋体；黄色单元格录入成绩，教师分、最终分与成绩状态自动计算。自动评分填入PR反馈中的实际分数（满分70），不得使用模板仓库自测分代替学生成绩。缺项时总分留空，实际0分可以正常计算。GitHub用户名可陆续填写。

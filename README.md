@@ -118,6 +118,8 @@ git push
 
 ## 10 自动反馈与作业跟踪
 
+教师可直接查看[37人提交与自动评分看板](https://github.com/jwentong/modern-switching-experiment-01/issues/2)。跨Fork提交、原PR补交、机器人反馈和成绩记录已经过[真实流程验收](docs/submission_workflow_verification.md)。首次贡献者的PR若等待运行批准，由教师检查后点击Approve workflows。
+
 GitHub Actions“自动评分系统”提供Summary及grading-report Artifacts；独立反馈流程尽可能在PR评论，无评论时以Summary和Artifacts为准。自动分仅作辅助反馈，教师复核后确定成绩。评分使用教师分支上的测试，学生修改评分脚本不能改变教师的评分规则。
 
 已按教师要求公开37人名单，见 [学生名单](course_management/students.csv)。[成绩记录说明](course_management/README.md)提供Excel成绩表、评分规则和提交跟踪入口。最新提交状态见“作业情况实时跟踪”Actions的Summary和tracking-table附件。
